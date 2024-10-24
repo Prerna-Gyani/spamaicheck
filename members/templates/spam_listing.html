@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Website Listing</title>
+</head>
+<body>
+    <h1>Spam Website Listing</h1>
+    <h2>Enter the Keyword and Select Type of Spam:</h2>
+    
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="keyword" placeholder="Enter Keyword" required>
+            <select name="spam_type" required>
+                <option value="">Select Spam Type</option>
+                <option value="phishing">Phishing</option>
+                <option value="malware">Malware</option>
+                <option value="scam">Scam</option>
+                <option value="spam">General Spam</option>
+            </select>
+            <button type="submit">Generate List</button>
+        </form>
+    </div>
+
+    {% if search_results %}
+        <h2>Results:</h2>
+        <ul>
+            {% for title, link in search_results %}
+                <li><a href="{{ link }}">{{ title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+
+</body>
+</html>
