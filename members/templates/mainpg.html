@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to SpamSentry Pixal AI</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #007BFF;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #343a40;
+            font-size: 1.8em;
+            margin: 10px 0;
+        }
+        h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin: 5px 0 20px;
+        }
+        .center {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .center:hover {
+            transform: translateY(-5px);
+        }
+        .genima {
+            background-color: #007BFF; /* Blue button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 10px 0;
+            width: 80%;
+        }
+        .genima:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: scale(1.05);
+        }
+        .feature-link {
+            text-decoration: none;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to SpamSentry Pixal AI</h1>
+    <h2>Protecting Your Online Digital Presence</h2>
+    <h3>Explore our features and modules!</h3>
+    
+    <div class="center">
+        <h1>What do you want to do?</h1>
+        <span>&#10024;</span>
+        <a href="{% url 'detect_spam' %}" class="feature-link">
+            <button class="genima">Detect Spam</button>
+        </a><br>
+        <span>&#10024;</span>
+        <a href="{% url 'spam_listing' %}" class="feature-link">
+            <button class="genima">Spam Website List</button>
+        </a>
+    </div>
+
+    <div class="footer">
+        &copy; 2024 SpamSentry Pixal AI Prerna. All Rights Reserved.
+    </div>
+</body>
+</html>

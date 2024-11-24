@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Website Listing</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #007BFF;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .malicious {
+            color: #FF0000;
+        }
+        .benign {
+            color: #28a745;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Spam Website Listing</h1>
+    <div class="container">
+        <form id="search-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="keyword" placeholder="Enter Keyword or URL" value="{{ keyword }}" required>
+            <button type="submit">Search</button>
+        </form>
+        <div id="search-results">
+            {% if search_results %}
+            <div class="result">
+                <h2>Search Results for "{{ keyword }}"</h2>
+                <ul>
+                    {% for result in search_results %}
+                        <li>
+                            <a href="{{ result.url }}" target="_blank">{{ result.url }}</a> - 
+                            {% if result.type == 'malware' or result.type == 'phishing' or result.type == 'defacement' %}
+                                <span class="malicious">Malicious</span>
+                            {% else %}
+                                <span class="benign">Benign</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% elif keyword %}
+            <p>No results found for "{{ keyword }}".</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Word Clouds by URL Type</h2>
+        <div class="grid">
+            <div>
+                <h3>Phishing</h3>
+                <img src="data:image/png;base64,{{ wordclouds.phishing }}" alt="Phishing Word Cloud">
+            </div>
+            <div>
+                <h3>Malware</h3>
+                <img src="data:image/png;base64,{{ wordclouds.malware }}" alt="Malware Word Cloud">
+            </div>
+            <div>
+                <h3>Defacement</h3>
+                <img src="data:image/png;base64,{{ wordclouds.defacement }}" alt="Defacement Word Cloud">
+            </div>
+            <div>
+                <h3>Benign</h3>
+                <img src="data:image/png;base64,{{ wordclouds.benign }}" alt="Benign Word Cloud">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>URL Type Distribution</h2>
+        <img src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart of URL Types">
+        <br><br><a href="{% url 'home' %}" class="button-link"><button>Home</button></a>
+    </div>
+
+
+    <div class="footer">
+        &copy; 2024 SpamSentry Pixal AI Prerna. All Rights Reserved.
+    </div>
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('search-results');
+                let html = '<div class="result">';
+                if (data.search_results.length) {
+                    html += `<h2>Search Results for "${data.keyword}"</h2><ul>`;
+                    data.search_results.forEach(result => {
+                        html += `
+                            <li>
+                                <a href="${result.url}" target="_blank">${result.url}</a> - 
+                                ${result.type === 'malware' || result.type === 'phishing' || result.type === 'defacement'
+                                    ? '<span class="malicious">Malicious</span>'
+                                    : '<span class="benign">Benign</span>'
+                                }
+                            </li>`;
+                    });
+                    html += '</ul></div>';
+                } else {
+                    html += `<p>No results found for "${data.keyword}".</p></div>`;
+                }
+                resultsContainer.innerHTML = html;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
